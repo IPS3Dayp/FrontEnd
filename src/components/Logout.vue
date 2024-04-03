@@ -5,23 +5,19 @@
 </template>
 
 <script>
-import { useAuth0 } from '@auth0/auth0-vue';
+  import { useAuth0 } from '@auth0/auth0-vue';
 
-export default {
-  setup() {
-    const { logout } = useAuth0();
+  export default {
+    setup() {
+      const { logout, getAccessTokenSilently } = useAuth0();
 
-    const handleLogout = () => {
-      logout({ 
-        logoutParams: { returnTo: window.location.origin },
-        redirectTo: './dashboard' // Redirect to the homepage after logout
-      });
-    };
+      const logoutUser = () => {
+        logout({ returnTo: window.location.origin });
+      };
 
-    return {
-      logout: handleLogout,
-    };
-  },
-};
+      return {
+        logout: logoutUser,
+      };
+    },
+  };
 </script>
-

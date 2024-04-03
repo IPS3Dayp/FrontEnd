@@ -9,18 +9,80 @@
       </a>
     </div>
     <router-view></router-view>
+    <button @click="doSomethingWithToken" class="execute-button">Execute</button>
   </div>
 </template>
 
 <script>
-// Import router-view to display the appropriate component based on the current route
-import { RouterView } from 'vue-router';
+import { ref, onMounted } from 'vue';  // Import onMounted from vue
+import { useAuth0 } from '@auth0/auth0-vue';
 import axios from 'axios';
-import Sidebar from './components/Sidebar.vue';
 
 export default {
-  components: {
-    Sidebar
+  setup() {
+    const { getAccessTokenSilently, user } = useAuth0();
+    const isAuthenticated = ref(false);
+
+    const doSomethingWithToken = async () => {
+      try {
+        const token = await getAccessTokenSilently();
+        console.log("Access Token:", token);
+
+        // Check if the user exists
+        const response = await axios.get('https://localhost:7286/api/User', {
+          headers: {
+            Authorization: 'Bearer ' + token
+          },
+          withCredentials: true
+        });
+
+        const data = response.data;
+
+        if (!data || (data.error && data.error.includes('User not found'))) {
+          // Create the user
+          const createUserResponse = await axios.post('https://localhost:7286/api/User', {
+            id: generateHexCode(),
+            email: user.value.email,
+            activityIds: []
+          }, {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + token
+            },
+            withCredentials: true
+          });
+
+          const createUserResult = createUserResponse.data;
+
+          if (createUserResult.error) {
+            console.error(createUserResult.error);
+          } else {
+            console.log('User created:', createUserResult);
+          }
+        } else {
+          console.log('User already exists:', data);
+        }
+
+      } catch (error) {
+        console.error("Error in doSomethingWithToken:", error);
+      }
+    };
+
+    const generateHexCode = () => {
+      return [...Array(24)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+    };
+
+    onMounted(async () => {
+      if (user.value && user.value.sub) {
+        isAuthenticated.value = true;
+        console.log("Authenticated user:", user.value);
+      }
+    });
+
+    return {
+      isAuthenticated,
+      doSomethingWithToken
+    };
   },
   data() {
     return {
@@ -56,13 +118,13 @@ export default {
 .app-container {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center horizontally */
-  justify-content: flex-start; /* Align content to the top */
-  height: 100vh; /* Full height of the viewport */
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
 }
 
 .logo-container {
-  margin-top: 20px; 
+  margin-top: 20px;
 }
 
 .logo {
@@ -70,10 +132,29 @@ export default {
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
+}
+
+.execute-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  font-size: 1em;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.execute-button:hover {
+  background-color: #0056b3;
 }
 </style>

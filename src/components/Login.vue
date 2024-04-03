@@ -9,37 +9,22 @@ import { useAuth0 } from '@auth0/auth0-vue';
 
 export default {
   setup() {
-    const { loginWithRedirect, user, isAuthenticated } = useAuth0();
+    const { loginWithRedirect } = useAuth0();
 
-    const sendUserData = async (userData) => {
-      try {
-        const response = await fetch('https://localhost:7286/api/User', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(userData),
-        });
-
-        const data = await response.json();
-        console.log('User data sent:', data);
-      } catch (error) {
-        console.error('Error sending user data:', error);
-      }
-    };
-
-    const handleLogin = async () => {
-      await loginWithRedirect();
-      if (isAuthenticated.value) {
-        const userProfile = await user.value;
-        sendUserData(userProfile);
-      }
+    const login = () => {
+      loginWithRedirect({
+        redirectUri: window.location.origin,
+        appState: {
+          targetUrl: '/dashboard' // the target route to redirect after login
+        },
+        audience: 'https://localhost:7286/', // your API audience
+        scope: 'openid profile email'
+      });
     };
 
     return {
-      login: handleLogin,
-      isAuthenticated,
+      login
     };
-  },
+  }
 };
 </script>
