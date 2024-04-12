@@ -32,8 +32,19 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('https://localhost:7291/api/PlannedActivities/currentdatetime');
-      this.activities = response.data;
+      const userResponse = await axios.get('https://localhost:7286/api/User/email/luukmsn2004@gmail.com');
+      const userId = userResponse.data.id; // Assuming the response contains the user's ID
+
+      const userActivitiesResponse = await axios.get(`https://localhost:7286/api/User/${userId}/Activities`);
+      const activityIds = userActivitiesResponse.data;
+
+      const currentDateActivitiesResponse = await axios.get('https://localhost:7291/api/PlannedActivities/currentdatetime');
+      const currentDateActivities = currentDateActivitiesResponse.data;
+
+      // Filter activities based on user's activity IDs
+      const activities = currentDateActivities.filter(activity => activityIds.includes(activity.id));
+
+      this.activities = activities;
     } catch (error) {
       console.error('Error fetching activities:', error);
     } finally {

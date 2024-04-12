@@ -29,16 +29,23 @@ export default {
         console.log("Access Token:", token);
 
         // Check if the user exists
-        const response = await axios.get('https://localhost:7286/api/User', {
-          headers: {
-            Authorization: 'Bearer ' + token
-          },
-          withCredentials: true
-        });
+        let response;
+        try {
+          response = await axios.get(`https://localhost:7286/api/User/email/${user.value.email}`, {
+          });
+          console.log('User exists', response.data);
+        } catch (error) {
+          if (error.response && error.response.status === 404) {
+            response = { data: null };  // Set data to null to indicate user doesn't exist
+            console.log('User does not exist');
+          } else {
+            throw error;  // Re-throw other errors
+          }
+        }
 
         const data = response.data;
 
-        if (!data || (data.error && data.error.includes('User not found'))) {
+        if (!data) {
           // Create the user
           const createUserResponse = await axios.post('https://localhost:7286/api/User', {
             id: generateHexCode(),
@@ -47,9 +54,7 @@ export default {
           }, {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: 'Bearer ' + token
             },
-            withCredentials: true
           });
 
           const createUserResult = createUserResponse.data;
