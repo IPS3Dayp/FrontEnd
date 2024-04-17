@@ -1,15 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="logo-container">
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" class="logo" alt="Vite logo" />
-      </a>
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-      </a>
-    </div>
     <router-view></router-view>
-    <button @click="doSomethingWithToken" class="execute-button">Execute</button>
   </div>
 </template>
 
@@ -81,12 +72,13 @@ export default {
       if (user.value && user.value.sub) {
         isAuthenticated.value = true;
         console.log("Authenticated user:", user.value);
+
+        await doSomethingWithToken();
       }
     });
 
     return {
-      isAuthenticated,
-      doSomethingWithToken
+      isAuthenticated
     };
   },
   data() {
@@ -144,22 +136,5 @@ export default {
 
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
-}
-
-.execute-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 10px 20px;
-  font-size: 1em;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.execute-button:hover {
-  background-color: #0056b3;
 }
 </style>

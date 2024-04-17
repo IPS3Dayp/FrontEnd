@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Login from '../components/Login.vue';
 import Logout from '../components/Logout.vue';
 import Dashboard from '../components/Dashboard.vue';
+import Planner from '../components/Planner.vue';
 import { useAuth0 } from '@auth0/auth0-vue';
 
 const routes: Array<RouteRecordRaw> = [
@@ -25,6 +26,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/logout',
     name: 'Logout',
     component: Logout,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/planner',
+    name: 'Planner',
+    component: Planner,
     meta: { requiresAuth: true }
   },
 ];
