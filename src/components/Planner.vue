@@ -4,6 +4,10 @@
     <Sidebar />
 
     <h1>Planner</h1>
+
+    <!-- Add Activity Button -->
+    <button @click="showAddActivityPopup = true">Add Activity</button>
+
     <!-- Conditional rendering based on loading and activities state -->
     <div v-if="loading" class="loading">Loading...</div>
     <div v-else-if="activities.length === 0" class="no-activities">No activities found.</div>
@@ -12,47 +16,71 @@
         {{ activity.activityName }} - {{ formatDate(activity.startTime) }}
       </li>
     </ul>
+
+    <!-- Add Activity Popup -->
+    <div v-if="showAddActivityPopup" class="add-activity-popup">
+      <h2>Add New Activity</h2>
+      <input v-model="newActivity.activityName" placeholder="Activity Name" />
+      <input type="datetime-local" v-model="newActivity.startTime" placeholder="Start Time" />
+      <input type="datetime-local" v-model="newActivity.endTime" placeholder="End Time" />
+      <button @click="addActivity">Save</button>
+      <button @click="showAddActivityPopup = false">Cancel</button>
+    </div>
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import Sidebar from './Sidebar.vue';  // Import Sidebar component
+import Sidebar from './Sidebar.vue';
 import { useAuth0 } from '@auth0/auth0-vue';
 
 export default {
   name: 'Planner',
   components: {
-    Sidebar  // Register Sidebar component
+    Sidebar
   },
   setup() {
     const { user } = useAuth0();
     const activities = ref([]);
     const loading = ref(true);
+    const showAddActivityPopup = ref(false);
+    const newActivity = ref({
+      activityName: '',
+      startTime: '',
+      endTime: ''
+    });
+
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`https://localhost:7286/api/User/email/${user.value.email}`);
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        throw error;
+      }
+    };
 
     const fetchActivities = async () => {
       try {
-        let queryString = ''; // Define queryString outside of the if block
+        loading.value = true; // Set loading to true before fetching activities
 
-        // Fetch user details using email to get the user ID
-        const response = await axios.get(`https://localhost:7286/api/User/email/${user.value.email}`);
-        const fetchedUser = response.data;
+        activities.value = []; // Clear the activities array before fetching again
+
+        const fetchedUser = await fetchUserData();
+
+        let queryString = '';
 
         if (fetchedUser && fetchedUser.id) {
-          // Fetch activity IDs using the user ID
           const activityIdsResponse = await axios.get(`https://localhost:7286/api/User/${fetchedUser.id}/Activities`);
           const activityIds = activityIdsResponse.data;
 
           if (activityIds && activityIds.length > 0) {
-            // Construct queryString
             queryString = activityIds.map(id => `ids=${id}`).join('&');
 
-            // Fetch individual activities using the activity IDs
             try {
               const activityResponse = await axios.get(`https://localhost:7291/api/PlannedActivities/multiple?${queryString}`);
               activities.value.push(...activityResponse.data);
-              console.log(activities);
             } catch (error) {
               console.error(`Error fetching activity with IDs ${queryString}:`, error);
             }
@@ -68,9 +96,38 @@ export default {
       } finally {
         loading.value = false;
       }
-      console.log(activities.value);
     };
 
+
+    const addActivity = async () => {
+      try {
+        const createdActivityResponse = await axios.post('https://localhost:7291/api/PlannedActivities', {
+          activityName: newActivity.value.activityName,
+          startTime: newActivity.value.startTime,
+          endTime: newActivity.value.endTime
+        });
+
+        const fetchedUser = await fetchUserData();
+        const createdActivity = createdActivityResponse.data;
+        console.log(createdActivity.id);
+
+        const addedActivityResponse = await axios.put(`https://localhost:7286/api/User/${fetchedUser.id}?activityID=${parseInt(createdActivity.id, 10)}`, {
+        });
+
+        console.log(addedActivityResponse)
+
+        newActivity.value = {
+          activityName: '',
+          startTime: '',
+          endTime: ''
+        };
+        showAddActivityPopup.value = false;
+
+        fetchActivities();
+      } catch (error) {
+        console.error('Error adding activity:', error);
+      }
+    };
 
     const formatDate = (dateTime) => {
       const options = {
@@ -89,11 +146,15 @@ export default {
     return {
       activities,
       loading,
-      formatDate
+      formatDate,
+      showAddActivityPopup,
+      newActivity,
+      addActivity
     };
   }
 };
 </script>
+
 
 <style scoped>
 .planner-container {
