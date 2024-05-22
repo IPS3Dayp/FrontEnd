@@ -14,9 +14,6 @@ describe('SQL Injection Test', () => {
       body: requestBody,
       failOnStatusCode: false // prevent Cypress from failing the test on non-2xx status codes
     }).then((response) => {
-      // Log the response for inspection
-      cy.log(response);
-
       // Check the response status code
       expect(response.status).to.not.equal(201);
 

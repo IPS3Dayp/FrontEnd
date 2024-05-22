@@ -3,11 +3,11 @@
 describe('Auth0 Login Tests', () => {
   const baseUrl = 'http://localhost:5173'; 
   const authUrl = 'https://dev-rivnyssike6d26bk.us.auth0.com'; 
-  const email = 'luukmsn2004@gmail.com'; 
-  const password = 'Leavy999!'; 
+  const email = Cypress.env('email'); 
+  const password = Cypress.env('password'); 
 
   beforeEach(() => {
-    cy.visit(`${baseUrl}/login`); // Navigeer naar de inlogpagina van je applicatie
+    cy.visit(`${baseUrl}/login`); // Navigeer naar de inlogpagina van de applicatie
   });
 
   it('Should login successfully via Auth0', () => {
@@ -23,6 +23,5 @@ describe('Auth0 Login Tests', () => {
     
     // Controleer of de gebruiker is doorgestuurd naar het dashboard
     cy.url().should('include', '/dashboard');
-    // cy.get('h1').should('contain', 'Welcome'); // Pas deze selector aan op basis van je daadwerkelijke dashboard
   });
 });
