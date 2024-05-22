@@ -24,5 +24,3 @@ describe('SQL Injection Tests', () => {
     });
   });
 });
-
-
