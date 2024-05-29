@@ -3,7 +3,6 @@ import Login from '../components/Login.vue';
 import Logout from '../components/Logout.vue';
 import Dashboard from '../components/Dashboard.vue';
 import Planner from '../components/Planner.vue';
-import { useAuth0 } from '@auth0/auth0-vue';
 
 const routes: Array<RouteRecordRaw> = [
   {

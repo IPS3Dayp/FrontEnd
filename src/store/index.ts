@@ -1,22 +1,20 @@
-// store/index.ts
-
-import { createStore } from 'vuex';
+import { createStore, Store } from 'vuex';
 
 interface State {
   isDarkMode: boolean;
 }
 
-const store = createStore<State>({
+const store: Store<State> = createStore<State>({
   state: {
     isDarkMode: false
   },
   mutations: {
-    toggleDarkMode(state) {
+    toggleDarkMode(state: State) {
       state.isDarkMode = !state.isDarkMode;
     }
   },
   actions: {
-    toggleDarkMode({ commit }) {
+    toggleDarkMode({ commit }: { commit: Function }) {
       commit('toggleDarkMode');
     }
   },
