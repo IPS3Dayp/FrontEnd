@@ -31,9 +31,9 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/DayPlanner:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/dayplanner:latest
 
       - name: Run Docker container
         run: |
-          docker run -d -p 8080:80 ${{ secrets.DOCKER_HUB_USERNAME }}/DayPlanner:latest
+          docker run -d -p 8080:80 ${{ secrets.DOCKER_HUB_USERNAME }}/dayplanner:latest
 
