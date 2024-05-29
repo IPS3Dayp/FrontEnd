@@ -3,7 +3,8 @@ name: Docker Build, Push, and Deploy
 on:
   push:
     branches:
-      - main  
+      - main 
+      - revert-branch 
 
 jobs:
   build-push-deploy:
