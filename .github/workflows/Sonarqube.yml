@@ -6,16 +6,25 @@ on:
       - main
 
 jobs:
-  sonarqube:
-    runs-on: ubuntu-latest
+    sonarqube:
+        runs-on: ubuntu-latest
+      
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+      
+            - name: Set up JDK
+              uses: actions/setup-java@v1
+              with:
+                java-version: '11'
+      
+            - name: Run SonarQube scanner
+              run: |
+                C:/sonar-scanner/bin/sonar-scanner.bat -X \
+                  -D"sonar.projectKey=S3Frontend" \
+                  -D"sonar.sources=." \
+                  -D"sonar.host.url=http://localhost:9000" \
+                  -D"sonar.token=${{ secrets.SONAR_TOKEN }}"
 
-    steps:
-        - uses: actions/checkout@v4
-          with:
-            fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-        - uses: sonarsource/sonarqube-scan-action@master
-          env:
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-            SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
         
