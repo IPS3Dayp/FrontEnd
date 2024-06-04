@@ -1,1 +1,1 @@
- 2tsXhrcypress/support/e2e.ts
+ 2tsXhrcypress/support/e2e.ts

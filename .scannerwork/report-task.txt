@@ -2,5 +2,5 @@ projectKey=S3Frontend
 serverUrl=http://localhost:9000
 serverVersion=10.5.1.90531
 dashboardUrl=http://localhost:9000/dashboard?id=S3Frontend
-ceTaskId=54637745-a2e9-4562-bbe8-1f7165313b0e
-ceTaskUrl=http://localhost:9000/api/ce/task?id=54637745-a2e9-4562-bbe8-1f7165313b0e
+ceTaskId=59fb7a75-9939-490e-9872-0800a6d8a201
+ceTaskUrl=http://localhost:9000/api/ce/task?id=59fb7a75-9939-490e-9872-0800a6d8a201

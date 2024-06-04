@@ -1,1 +1,1 @@
- 2tsXhrcypress/e2e/spec.cy.ts
+ 2tsXhrcypress/e2e/spec.cy.ts

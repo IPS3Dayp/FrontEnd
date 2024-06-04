@@ -1,1 +1,1 @@
-& 2tsXhrvite.config.ts
+& 2tsXhrvite.config.ts

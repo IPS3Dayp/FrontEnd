@@ -1,2 +1,2 @@
  2tsX
-hrcypress.config.ts
+hrcypress.config.ts

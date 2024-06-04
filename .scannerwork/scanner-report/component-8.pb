@@ -1,1 +1,1 @@
- 2tsXhrcypress/e2e/sql-post.spec.cy.ts
+ 2tsXhrcypress/e2e/sql-post.spec.cy.ts
