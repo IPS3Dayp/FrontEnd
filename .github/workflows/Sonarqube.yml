@@ -1,31 +1,31 @@
-name: Build
+name: SonarQube Analysis
 
 on:
   push:
     branches:
       - main
 
-
 jobs:
-  build:
-    name: Build and analyze
+  sonarqube:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with: 
-            args: -X # Add the -X switch for debugging
-      # If you wish to fail your job when the Quality Gate is red, uncomment the
-      # following lines. This would typically be used to fail a deployment.
-      # - uses: sonarsource/sonarqube-quality-gate-action@master
-      #   timeout-minutes: 5
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          java-version: '11'
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: SonarQube Scan
+        run: sonar-scanner \
+             -Dsonar.projectKey=S3Frontend \
+
+             -Dsonar.host.url=https://localhost:9000 \
+             -Dsonar.login=your_token
 
         
