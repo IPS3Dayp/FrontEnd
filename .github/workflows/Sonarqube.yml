@@ -19,8 +19,7 @@ jobs:
                 java-version: '11'
       
             - name: Run SonarQube scanner
-              run: |
-                C:/sonar-scanner/bin/sonar-scanner.bat -X \
+              run: sonar-scanner \
                   -D"sonar.projectKey=S3Frontend" \
                   -D"sonar.sources=." \
                   -D"sonar.host.url=http://localhost:9000" \
