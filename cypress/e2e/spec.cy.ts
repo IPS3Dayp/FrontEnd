@@ -23,6 +23,5 @@ describe('Auth0 Login Tests', () => {
     
     // Controleer of de gebruiker is doorgestuurd naar het dashboard
     cy.url().should('include', '/dashboard');
-    // cy.get('h1').should('contain', 'Welcome'); // Pas deze selector aan op basis van je daadwerkelijke dashboard
   });
 });

@@ -9,7 +9,7 @@
 
   export default {
     setup() {
-      const { logout, getAccessTokenSilently } = useAuth0();
+      const { logout } = useAuth0();
 
       const logoutUser = () => {
         logout({ returnTo: window.location.origin });
