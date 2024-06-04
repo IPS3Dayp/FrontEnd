@@ -10,22 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: '11'
-
-      - name: Build with Maven
-        run: mvn clean install
-
-      - name: SonarQube Scan
-        run: sonar-scanner \
-             -Dsonar.projectKey=S3Frontend \
-
-             -Dsonar.host.url=https://localhost:9000 \
-             -Dsonar.login=your_token
+        - uses: actions/checkout@v4
+          with:
+            fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+        - uses: sonarsource/sonarqube-scan-action@master
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
         
