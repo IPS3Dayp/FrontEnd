@@ -6,24 +6,34 @@ on:
       - main
 
 jobs:
-    sonarqube:
-        runs-on: ubuntu-latest
-      
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v2
-      
-            - name: Set up JDK
-              uses: actions/setup-java@v1
-              with:
-                java-version: '11'
-      
-            - name: Run SonarQube scanner
-              run: sonar-scanner \
-                  -D"sonar.projectKey=S3Frontend" \
-                  -D"sonar.sources=." \
-                  -D"sonar.host.url=http://localhost:9000" \
-                  -D"sonar.token=${{ secrets.SONAR_TOKEN }}"
+  sonarqube:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+
+      - name: Install SonarQube Scanner
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip
+          curl -sSLo /tmp/sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+          unzip -q /tmp/sonar-scanner-cli.zip -d /tmp
+          sudo mv /tmp/sonar-scanner-4.6.2.2472-linux /opt/sonar-scanner
+          sudo ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/local/bin/sonar-scanner
+
+      - name: Run SonarQube scanner
+        run: |
+          sonar-scanner -X \
+            -D"sonar.projectKey=S3Frontend" \
+            -D"sonar.sources=." \
+            -D"sonar.host.url=http://localhost:9000" \
+            -D"sonar.token=${{ secrets.SONAR_TOKEN }}"
 
 
         
